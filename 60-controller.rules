@@ -1,4 +1,4 @@
 # Must customize vendor and product id for your controller
 # idVendor=1a86, idProduct=752d
-ACTION=="add", SUBSYSTEM=="usb", ATTRS{idVendor}=="1a86", ATTRS{idProduct}=="752d", RUN+="/bin/bash -c '/bin/echo /usr/local/bin/katana_bridge_start | /usr/bin/at now'"
-ACTION=="remove", ENV{ID_VENDOR_ID}=="1a86", ENV{ID_MODEL_ID}=="752d", ENV{DEVTYPE}=="usb_device", RUN+="/usr/local/bin/katana_bridge_stop"
+ACTION=="add", SUBSYSTEM=="usb", ATTRS{idVendor}=="1a86", ATTRS{idProduct}=="752d", RUN+="/bin/bash -c '/bin/echo /usr/bin/sudo /usr/local/bin/katana_bridge_start | /usr/bin/at now'"
+ACTION=="remove", ENV{ID_VENDOR_ID}=="1a86", ENV{ID_MODEL_ID}=="752d", ENV{DEVTYPE}=="usb_device", RUN+="/usr/bin/sudo /usr/local/bin/katana_bridge_stop"

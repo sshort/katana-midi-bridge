@@ -105,9 +105,13 @@ if not os.path.exists( "/proc/%s" % oldpid ):
     syslog.syslog( "%d: Renaming %s to katana_%d" % (pid, lockfile, pid) )
     try:
         os.rename( lockfile, "katana_%d" % os.getpid() ) 
+    except PermissionError:
+        pass
+        syslog.syslog( "%d: Unable to rename file - permission denied" % pid )
     except Exception:
         pass
         syslog.syslog( "%d: Unable to rename file" % pid )
+        syslog.syslog( "%d: Exception %s" % Exception )
     else:
         syslog.syslog( "%d: Proceeding with launch ..." % pid)
         # syslog.syslog( "%d: About to exec" % pid )
@@ -117,7 +121,7 @@ if not os.path.exists( "/proc/%s" % oldpid ):
         
         # Need secondary groups to access MIDI and USB devices
         sec_gids = ( getgrnam('plugdev').gr_gid, getgrnam('audio').gr_gid )
-#        os.setgroups( sec_gids )
+        os.setgroups( sec_gids )
 
         os.setuid( pwObj.pw_uid )
 
@@ -129,7 +133,9 @@ if not os.path.exists( "/proc/%s" % oldpid ):
 
         syslog.syslog( "%d: Launching katana_bridge_app" % pid)
 
-        os.execl( "/usr/local/bin/katana_bridge_app", "katana_bridge", 
+        result = os.execl( "/usr/local/bin/katana_bridge_app", "katana_bridge", 
                   "%s" % control_midi_device, "%s" % control_midi_channel,
                   "%s" % katana_midi_device, "%s" % katana_midi_channel,
                   "preset.data" )
+
+        syslog.syslog( "%d: Result %d from katana_bridge_app" % result)
